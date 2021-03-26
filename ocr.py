@@ -83,7 +83,7 @@ def calculate_distances_for_test(training_dataset, test):
 
 
 # Our KNN algorithm, this can be subbed out for any other OCR algorithm
-def knn(training_dataset, training_labels, test_dataset, test_labels, k):
+def knn(training_dataset, training_labels, test_dataset, k):
   predictions = []
   for index, test in enumerate(test_dataset):
     training_distances = calculate_distances_for_test(training_dataset, test)
@@ -97,7 +97,7 @@ def knn(training_dataset, training_labels, test_dataset, test_labels, k):
     for index2 in sorted_distances_indices[:k]:
       candidates.append(training_labels[index2])
 
-    print("Answer: {} ----- Index: {} ----- Candidates: {}".format(test_labels[index], index, candidates))
+    print("Index: {} ----- Candidates: {}".format(index, candidates))
     top_candidate = get_most_frequent_element(candidates)
     print(" Guess: {}\n".format(top_candidate))
     predictions.append(top_candidate)
@@ -164,7 +164,7 @@ def main():
   flat_training_dataset = format_list(training_dataset)
   flat_test_dataset = format_list(test_dataset)
 
-  predictions = knn(flat_training_dataset, training_labels, flat_test_dataset, test_labels, K)
+  predictions = knn(flat_training_dataset, training_labels, flat_test_dataset, K)
 
   print("Guesses: {}".format(predictions))
 
