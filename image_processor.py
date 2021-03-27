@@ -1,16 +1,16 @@
 import flask
-from PIL import Image, ImageFilter
+from PIL import Image
 from ocr import prepare_drawn_image, scan_images, scan_labels, format_list, knn, check_accuracy
 
-app = flask.Flask(__name__)
+application = flask.Flask(__name__)
 
 TRAIN_LABEL_FILE = './data/train-labels-idx1-ubyte'
 TRAIN_IMAGE_FILE = './data/train-images-idx3-ubyte'
 
 
-@app.route('/process-image', methods=['POST'])
+@application.route('/process-image', methods=['POST'])
 def process_image():
-  args = flask.request.form.to_dict() # might need to change this arg
+  args = flask.request.get_json()
   train_values = int(args['train_values'])
   test_values = int(args['test_values'])
   k = int(args['k'])
@@ -39,4 +39,4 @@ def process_image():
   return flask.jsonify(predictions)
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  application.run(debug=True)

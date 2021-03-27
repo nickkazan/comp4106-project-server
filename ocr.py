@@ -149,28 +149,24 @@ def prepare_drawn_image(path):
   return list(canvas.getdata())
 
 
-def main():
-  print('Chosen values: TRAIN_VALUES={}, TEST_VALUES={}, K={}\n'.format(TRAIN_VALUES, TEST_VALUES, K))
-  training_dataset = scan_images(TRAIN_IMAGE_FILE, TRAIN_VALUES)
-  training_labels = scan_labels(TRAIN_LABEL_FILE, TRAIN_VALUES)
-  test_dataset = scan_images(TEST_IMAGE_FILE, TEST_VALUES)
-  test_labels = scan_labels(TEST_LABEL_FILE, TEST_VALUES)
+# def main():
+#   print('Chosen values: TRAIN_VALUES={}, TEST_VALUES={}, K={}\n'.format(TRAIN_VALUES, TEST_VALUES, K))
+#   training_dataset = scan_images(TRAIN_IMAGE_FILE, TRAIN_VALUES)
+#   training_labels = scan_labels(TRAIN_LABEL_FILE, TRAIN_VALUES)
+#   test_dataset = scan_images(TEST_IMAGE_FILE, TEST_VALUES)
+#   test_labels = scan_labels(TEST_LABEL_FILE, TEST_VALUES)
 
 
-  # MY TEST
-  # flat_test_dataset = [prepare_drawn_image(DRAWN_TEST_IMAGE)]
-  # test_labels = [1]
+#   # MY TEST
+#   # flat_test_dataset = [prepare_drawn_image(DRAWN_TEST_IMAGE)]
+#   # test_labels = [1]
 
-  flat_training_dataset = format_list(training_dataset)
-  flat_test_dataset = format_list(test_dataset)
+#   flat_training_dataset = format_list(training_dataset)
+#   flat_test_dataset = format_list(test_dataset)
 
-  predictions = knn(flat_training_dataset, training_labels, flat_test_dataset, K)
+#   predictions = knn(flat_training_dataset, training_labels, flat_test_dataset, K)
 
-  print("Guesses: {}".format(predictions))
+#   print("Guesses: {}".format(predictions))
 
-  accuracy = check_accuracy(predictions, test_labels)
-  print("Accuracy: {}%".format(accuracy))
-
-
-if __name__ == '__main__':
-    main()
+#   accuracy = check_accuracy(predictions, test_labels)
+#   print("Accuracy: {}%".format(accuracy))
