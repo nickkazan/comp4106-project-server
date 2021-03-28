@@ -1,4 +1,6 @@
 import flask
+import base64
+import io
 from PIL import Image
 from ocr import prepare_drawn_image, scan_images, scan_labels, format_list, knn, check_accuracy
 
@@ -14,8 +16,14 @@ def process_image():
   train_values = int(args['train_values'])
   test_values = int(args['test_values'])
   k = int(args['k'])
-  path = args['path']
-  flat_test_dataset = [prepare_drawn_image(path)]
+  image_data = args['image']
+  image_b64 = image_data[22:]
+  image_binary = base64.b64decode(image_b64)
+  buffer = io.BytesIO(image_binary)
+  image = Image.open(buffer).convert("L")
+
+  flat_test_dataset = [prepare_drawn_image(image)]
+
   print('Chosen values: TRAIN_VALUES={}, TEST_VALUES={}, K={}\n'.format(train_values, test_values, k))
 
   if flask.request.files and flask.request.files['image']:
@@ -28,15 +36,18 @@ def process_image():
   # test_dataset = scan_images(TEST_IMAGE_FILE, test_values)
   # test_labels = scan_labels(TEST_LABEL_FILE, test_values)
 
-
   flat_training_dataset = format_list(training_dataset)
   # flat_test_dataset = format_list(test_dataset)
 
-  predictions = knn(flat_training_dataset, training_labels, flat_test_dataset, k)
+  predictions, candidates = knn(flat_training_dataset, training_labels, flat_test_dataset, k)
 
-  print("Guesses: {}".format(predictions))
+  print("Predictions: {}".format(predictions))
+  print("Candidates: {}".format(candidates))
 
-  return flask.jsonify(predictions)
+  # add our predictions into the list for returning
+  candidates.insert(0, predictions[0])
+
+  return flask.jsonify(candidates)
 
 if __name__ == "__main__":
   application.run(debug=True)

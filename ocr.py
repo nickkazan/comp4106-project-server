@@ -7,11 +7,6 @@ TRAIN_IMAGE_FILE = './data/train-images-idx3-ubyte'
 
 DRAWN_TEST_IMAGE = './data/test_image.png'
 
-# These values should be played around with
-K = 5
-TRAIN_VALUES = 3000
-TEST_VALUES = 5
-
 
 def convert_bytes_to_int(bytes):
   return int.from_bytes(bytes, 'big')
@@ -101,7 +96,7 @@ def knn(training_dataset, training_labels, test_dataset, k):
     top_candidate = get_most_frequent_element(candidates)
     print(" Guess: {}\n".format(top_candidate))
     predictions.append(top_candidate)
-  return predictions
+  return predictions, candidates
 
 
 # Determine how accurate our predictions were vs. the actual labels
@@ -115,38 +110,33 @@ def check_accuracy(predictions, true_labels):
 
 
 # Takes a drawn image and will return the list of values for each pixel
-def prepare_drawn_image(path):
+def prepare_drawn_image(image):
   # Create image with black canvas (28 x 28)
-  image = Image.open(path).convert('L')
+  # image = Image.open(path).convert('L')
   width = float(image.size[0])
   height = float(image.size[1])
-  canvas = Image.new('L', (28, 28), (0))
+  print("W", width)
+  print("H", height)
+  canvas = Image.new('L', (70, 70), (0))
 
   # If image is not a sqaure, resize to fit width or height of 20 pixels
-  if width > height:
-    nheight = int(round((20.0 / width * height), 0))
-    if (nheight == 0):
-      nheight = 1
+  nheight = int(round((50.0 / width * height), 0))
+  print("NH", nheight)
+  if (nheight == 0):
+    nheight = 1
 
-    # Set width to 20 and height accordingly
-    resized_image = image.resize((20, nheight), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-    top_padding = int(round(((28 - nheight) / 2), 0))
-    # Pasting the image onto our canvas
-    canvas.paste(resized_image, (4, top_padding))
-  else:
-    nwidth = int(round((20.0 / height * width), 0))
-    if (nwidth == 0):
-      nwidth = 1
-    
-    # Set height to 20 and width accordingly
-    resized_image = image.resize((nwidth, 20), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
-    left_padding = int(round(((28 - nwidth) / 2), 0))
-    # Pasting the image onto our canvas
-    canvas.paste(resized_image, (left_padding, 4))
-  
+  resized_image = image.resize((35, 35), Image.ANTIALIAS).filter(ImageFilter.SHARPEN)
+  canvas.paste(resized_image, (7, 7))
+
   # Save the image for test viewing and return the list of values for calculation
-  canvas.save("./data/drawn_image.png")
-  return list(canvas.getdata())
+  final_canvas = canvas.crop((11, 11, 39, 39))
+  final_canvas.save("./data/drawn_image.png")
+  print(canvas.size)
+  return list(final_canvas.getdata())
+  
+  # canvas.save("./data/drawn_image.png")
+  # return list(canvas.getdata())
+
 
 
 # def main():
